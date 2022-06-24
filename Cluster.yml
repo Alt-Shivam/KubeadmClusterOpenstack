@@ -65,7 +65,7 @@
        insertbefore: BOF
 
    - name: Install Packages
-     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ ansible-playbook SetupHost.yml
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ ansible-playbook SetupHost.yaml
      ignore_errors: yes
 
    - name: Chmod
