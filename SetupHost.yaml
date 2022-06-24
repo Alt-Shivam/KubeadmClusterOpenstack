@@ -1,0 +1,33 @@
+--
+- hosts: 127.0.0.1
+  connection: local
+  vars_files:
+    - /home/ubuntu/openstack-helm-infra/playbooks/vars.yaml
+  vars:
+    work_dir: "{{ zuul.project.src_dir }}/{{ zuul_osh_infra_relative_path | default('') }}"
+  gather_facts: False
+  become: yes
+  roles:
+    - deploy-python
+  tags:
+    - deploy-python
+
+- hosts: 127.0.0.1
+  connection: local
+  vars_files:
+    - /home/ubuntu/openstack-helm-infra/playbooks/vars.yaml
+  vars:
+    work_dir: "{{ zuul.project.src_dir }}/{{ zuul_osh_infra_relative_path | default('') }}"
+  gather_facts: True
+  become: yes
+  roles:
+    - setup-firewall
+    - deploy-python-pip
+    - deploy-docker
+    - deploy-jq
+  tags:
+    - setup-firewall
+    - deploy-python-pip
+    - deploy-docker
+    - deploy-jq
+...

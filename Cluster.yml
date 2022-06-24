@@ -1,0 +1,122 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+   - name: Install git
+     apt:
+       name: git
+       state: present
+       update_cache: true
+
+   - name: Install curl
+     apt:
+       name: curl
+       state: present
+       update_cache: true
+
+   - name: Install make
+     apt:
+       name: make
+       state: present
+       update_cache: true
+
+   - name: Clone openstack-helm
+     git:
+       repo: https://github.com/openstack/openstack-helm.git
+       dest: /home/ubuntu/openstack-helm/
+       clone: yes
+       update: yes
+
+   - name: Clone openstack-helm-infra
+     git:
+       repo: https://github.com/openstack/openstack-helm-infra.git
+       dest: /home/ubuntu/openstack-helm-infra/
+       clone: yes
+       update: yes
+
+   - name: "Changing /etc/hosts file"
+     become: yes
+     become_user: root
+     tags: Changing file
+     lineinfile:
+       path: /etc/hosts
+       # String to Search
+       regexp: "127.0.0.1 localhost" 
+       # State is set to Absent to remove if the Searching Line is found
+       state: absent
+       backup: yes
+
+   - name: inserting host
+     lineinfile:
+       path: /etc/hosts
+       line: '127.0.1.1   ubuntu'
+       insertbefore: BOF
+   - name: inserting host
+     lineinfile:
+       path: /etc/hosts
+       line: '127.0.0.1   localhost.localdomain localhost'
+       insertbefore: BOF
+
+   - name: Install Packages
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ ansible-playbook SetupHost.yml
+     ignore_errors: yes
+
+   - name: Chmod
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ sudo chmod 777 main.sh
+     ignore_errors: yes
+
+   - name: Install Packages
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ ./main.sh
+     ignore_errors: yes
+
+   - name: install pyaml
+     command: sudo -H pip3 install --ignore-installed PyYAML
+
+   - name: inserting host
+     lineinfile:
+       path: /etc/sysctl.conf
+       line: 'net.bridge.bridge-nf-call-iptables = 1'
+       insertbefore: BOF
+
+   - name: Changing sysctl.conf
+     command: sudo modprobe br_netfilter
+
+   - name: Changing sysctl.conf
+     command: sudo sysctl -p /etc/sysctl.conf
+
+   - name: Create cluster
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ sudo chmod 777 KubeadmCluster.sh
+     ignore_errors: yes
+
+   - name: Install Packages
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ ./KubeadmCluster.sh
+     ignore_errors: yes
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   - name: Initiating cluster
+     command: chdir=/home/ubuntu/openstack-helm-infra/ make dev-deploy k8s
+     ignore_errors: yes
+
+   - name: Disable systemd-resolved.service
+     command: sudo systemctl disable systemd-resolved.service
+
+   - name: Disable systemd-resolved
+     command: sudo systemctl stop systemd-resolved
+
+   - name: Initiating cluster
+     command: chdir=/home/ubuntu/openstack-helm-infra/ make dev-deploy k8s
