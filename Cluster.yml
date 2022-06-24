@@ -20,6 +20,12 @@
        state: present
        update_cache: true
 
+   - name: Install ansible
+     apt:
+       name: ansible
+       state: present
+       update_cache: true
+
    - name: Clone openstack-helm
      git:
        repo: https://github.com/openstack/openstack-helm.git
