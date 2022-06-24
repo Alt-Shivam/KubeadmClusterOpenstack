@@ -102,7 +102,7 @@
      ignore_errors: yes
 
    - name: Install Packages
-     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ ./KubeadmCluster.sh
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ sudo sh ./KubeadmCluster.sh
      ignore_errors: yes
 
    
@@ -121,15 +121,15 @@
 
 
 
-   - name: Initiating cluster
-     command: chdir=/home/ubuntu/openstack-helm-infra/ make dev-deploy k8s
-     ignore_errors: yes
-
-   - name: Disable systemd-resolved.service
-     command: sudo systemctl disable systemd-resolved.service
-
-   - name: Disable systemd-resolved
-     command: sudo systemctl stop systemd-resolved
-
-   - name: Initiating cluster
-     command: chdir=/home/ubuntu/openstack-helm-infra/ make dev-deploy k8s
+#   - name: Initiating cluster
+#     command: chdir=/home/ubuntu/openstack-helm-infra/ make dev-deploy k8s
+#     ignore_errors: yes
+#
+#   - name: Disable systemd-resolved.service
+#     command: sudo systemctl disable systemd-resolved.service
+#
+#   - name: Disable systemd-resolved
+#     command: sudo systemctl stop systemd-resolved
+#
+#  - name: Initiating cluster
+#     command: chdir=/home/ubuntu/openstack-helm-infra/ make dev-deploy k8s
