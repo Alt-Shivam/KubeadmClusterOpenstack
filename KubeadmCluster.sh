@@ -15,30 +15,29 @@ sudo swapoff -a
 echo "DefaultLimitMEMLOCK=16384" | sudo tee -a /etc/systemd/system.conf
 sudo systemctl daemon-reexec
 
-function configure_resolvconf {
-  # here with systemd-resolved disabled, we'll have 2 separate resolv.conf
-  # 1 - /etc/resolv.conf - to be used for resolution on host
 
-  kube_dns_ip="10.96.0.10"
-  # keep all nameservers from both resolv.conf excluding local addresses
-  old_ns=$(grep -P --no-filename "^nameserver\s+(?!127\.0\.0\.|${kube_dns_ip})" \
-           /etc/resolv.conf /run/systemd/resolve/resolv.conf | sort | uniq)
+# here with systemd-resolved disabled, we'll have 2 separate resolv.conf
+# 1 - /etc/resolv.conf - to be used for resolution on host
 
-  # Add kube-dns ip to /etc/resolv.conf for local usage
-  sudo bash -c "echo 'nameserver ${kube_dns_ip}' > /etc/resolv.conf"
-  if [ -z "${HTTP_PROXY}" ]; then
-    sudo bash -c "printf 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n' > /run/systemd/resolve/resolv.conf"
-    sudo bash -c "printf 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n' >> /etc/resolv.conf"
-  else
-    sudo bash -c "echo \"${old_ns}\" > /run/systemd/resolve/resolv.conf"
-    sudo bash -c "echo \"${old_ns}\" >> /etc/resolv.conf"
-  fi
+kube_dns_ip="10.96.0.10"
+# keep all nameservers from both resolv.conf excluding local addresses
+old_ns=$(grep -P --no-filename "^nameserver\s+(?!127\.0\.0\.|${kube_dns_ip})" \
+         /etc/resolv.conf /run/systemd/resolve/resolv.conf | sort | uniq)
+# Add kube-dns ip to /etc/resolv.conf for local usage
+sudo bash -c "echo 'nameserver ${kube_dns_ip}' > /etc/resolv.conf"
+if [ -z "${HTTP_PROXY}" ]; then
+  sudo bash -c "printf 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n' > /run/systemd/resolve/resolv.conf"
+  sudo bash -c "printf 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n' >> /etc/resolv.conf"
+else
+  sudo bash -c "echo \"${old_ns}\" > /run/systemd/resolve/resolv.conf"
+  sudo bash -c "echo \"${old_ns}\" >> /etc/resolv.conf"
+fi
 
-  for file in /etc/resolv.conf /run/systemd/resolve/resolv.conf; do
-    sudo bash -c "echo 'search svc.cluster.local cluster.local' >> ${file}"
-    sudo bash -c "echo 'options ndots:5 timeout:1 attempts:1' >> ${file}"
-  done
-}
+for file in /etc/resolv.conf /run/systemd/resolve/resolv.conf; do
+  sudo bash -c "echo 'search svc.cluster.local cluster.local' >> ${file}"
+  sudo bash -c "echo 'options ndots:5 timeout:1 attempts:1' >> ${file}"
+done
+
 
 # NOTE: Clean Up hosts file
 sudo sed -i '/^127.0.0.1/c\127.0.0.1 localhost localhost.localdomain localhost4localhost4.localdomain4' /etc/hosts

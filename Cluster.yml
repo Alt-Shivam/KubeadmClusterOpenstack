@@ -46,6 +46,10 @@
        dest: /home/ubuntu/KubeadmClusterOpenstack/
        clone: yes
        update: yes
+   
+   - name: Install Packages
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ sudo ansible-playbook SetupHost.yaml
+     ignore_errors: yes
 
    - name: "Changing /etc/hosts file"
      become: yes
@@ -69,10 +73,6 @@
        path: /etc/hosts
        line: '127.0.0.1   localhost.localdomain localhost'
        insertbefore: BOF
-
-   - name: Install Packages
-     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ sudo ansible-playbook SetupHost.yaml
-     ignore_errors: yes
 
    - name: Chmod
      command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ sudo chmod 777 main.sh
