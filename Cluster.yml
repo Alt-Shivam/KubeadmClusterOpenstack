@@ -34,6 +34,13 @@
        clone: yes
        update: yes
 
+   - name: Clone Scripts
+     git:
+       repo: https://github.com/Alt-Shivam/KubeadmClusterOpenstack.git
+       dest: /home/ubuntu/KubeadmClusterOpenstack/
+       clone: yes
+       update: yes
+
    - name: "Changing /etc/hosts file"
      become: yes
      become_user: root
