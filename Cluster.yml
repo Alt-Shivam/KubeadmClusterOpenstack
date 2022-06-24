@@ -65,7 +65,7 @@
        insertbefore: BOF
 
    - name: Install Packages
-     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ ansible-playbook SetupHost.yaml
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ sudo ansible-playbook SetupHost.yaml
      ignore_errors: yes
 
    - name: Chmod
@@ -73,7 +73,7 @@
      ignore_errors: yes
 
    - name: Install Packages
-     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ ./main.sh
+     command: chdir=/home/ubuntu/KubeadmClusterOpenstack/ sudo sh ./main.sh
      ignore_errors: yes
 
    - name: install pyaml
