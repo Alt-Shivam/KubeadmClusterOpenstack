@@ -2,7 +2,7 @@
 set -ex
 
 : "${HELM_VERSION:="v3.6.3"}"
-: "${KUBE_VERSION:="1.21.5-00"}"
+: "${KUBE_VERSION:="1.23.0"}"
 : "${CALICO_VERSION:="v3.20"}"
 : "${YQ_VERSION:="v4.6.0"}"
 
