@@ -35,3 +35,5 @@ ansible-playbook -i hosts Cluster.yml
 ```
   
 K8s Cluster Ready.
+
+
