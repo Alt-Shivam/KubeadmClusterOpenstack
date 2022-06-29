@@ -1,5 +1,5 @@
 [control_plane]
-control1 ansible_host=192.168.5.123 ansible_user=ubuntu 
+control1 ansible_host=<VM-Ip-addr> ansible_user=ubuntu 
 
 [workers]
 
