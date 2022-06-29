@@ -1,6 +1,7 @@
 
 set -ex
 
+#version to be used
 : "${HELM_VERSION:="v3.6.3"}"
 : "${KUBE_VERSION:="1.23.0-00"}"
 : "${CALICO_VERSION:="v3.20"}"
